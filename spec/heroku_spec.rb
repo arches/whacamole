@@ -6,7 +6,7 @@ describe Whacamole::Heroku do
 
   before do
     h.api_token = "foobar"
-    h.app_name = "a50-staging"
+    h.app_name = "staging"
   end
 
   describe "authorization" do
@@ -18,7 +18,7 @@ describe Whacamole::Heroku do
   describe "create_log_session" do
     it "executes a request using the default headers" do
       req = {}
-      Net::HTTP::Post.should_receive(:new).with("/apps/a50-staging/log-sessions") { req }
+      Net::HTTP::Post.should_receive(:new).with("/apps/staging/log-sessions") { req }
       req.should_receive(:[]=).with("Authorization", h.authorization)
       req.should_receive(:[]=).with("Content-type", "application/json")
       req.should_receive(:[]=).with("Accept", "application/vnd.heroku+json; version=3")
