@@ -27,7 +27,7 @@ module Whacamole
     def restart(process)
       return if restarts[process] > (Time.now - RESTART_RATE_LIMIT)
 
-      legacy_api.post_ps_restart(process, app_name)
+      legacy_api.post_ps_restart(app_name, "ps" => process)
       restarts[process] = Time.now
     end
 
