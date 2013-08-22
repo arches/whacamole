@@ -1,9 +1,10 @@
 require 'base64'
 require 'net/http'
 require 'json'
+require 'heroku-api'
 
 module Whacamole
-  class Heroku
+  class HerokuWrapper
     attr_accessor :api_token, :app_name
 
     def create_log_session
@@ -21,6 +22,10 @@ module Whacamole
       "Basic " + Base64.encode64(":#{api_token}").gsub("\n", '')
     end
 
+    def restart(process)
+      legacy_api.post_ps_restart(process, app_name)
+    end
+
     private
     def content_type
       "application/json"
@@ -32,6 +37,10 @@ module Whacamole
 
     def log_sessions_url
       "https://api.heroku.com/apps/#{app_name}/log-sessions"
+    end
+
+    def legacy_api
+      Heroku::API.new(api_key: api_token)
     end
   end
 end

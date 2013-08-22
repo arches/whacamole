@@ -1,8 +1,8 @@
 require 'spec_helper'
-require_relative '../lib/whacamole/heroku'
+require_relative '../lib/whacamole/heroku_wrapper'
 
-describe Whacamole::Heroku do
-  let(:h) { Whacamole::Heroku.new }
+describe Whacamole::HerokuWrapper do
+  let(:h) { Whacamole::HerokuWrapper.new }
 
   before do
     h.api_token = "foobar"
@@ -25,6 +25,15 @@ describe Whacamole::Heroku do
       req.should_receive(:set_form_data).with({'tail' => true})
       Net::HTTP.should_receive(:start).with("api.heroku.com", 443, use_ssl: true).and_return(OpenStruct.new(body: "{\"logplex_url\": \"https://api.heroku.com/log/session/url\"}"))
       h.create_log_session.should == "https://api.heroku.com/log/session/url"
+    end
+  end
+
+  describe "restart" do
+    it "restarts the given process using the legacy api" do
+      api = OpenStruct.new
+      Heroku::API.should_receive(:new).with(api_key: h.api_token) { api }
+      api.should_receive(:post_ps_restart).with("web.2", h.app_name)
+      h.restart("web.2")
     end
   end
 end

@@ -18,6 +18,8 @@ Gem::Specification.new do |gem|
   gem.test_files          = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths       = ["lib"]
 
+  gem.add_dependency 'heroku-api', '~> 0.3.15'
+
   gem.add_development_dependency 'cucumber', '~> 1.2.1'
   gem.add_development_dependency 'rspec', '~> 2.11.0'
   gem.add_development_dependency 'rake', '~> 0.9.2'
