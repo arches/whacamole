@@ -1,6 +1,8 @@
 whacamole
 =========
 
+[![Build Status](https://travis-ci.org/arches/whacamole.png?branch=oo)](https://travis-ci.org/arches/whacamole)
+
 Here’s what Heroku says about dyno memory usage:
 
 > Dynos are available in 1X or 2X sizes and are allocated 512MB or 1024MB respectively.
