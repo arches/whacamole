@@ -45,7 +45,7 @@ module Whacamole
     end
 
     def legacy_api
-      @legacy_api ||= Heroku::API.new(api_key: api_token)
+      @legacy_api ||= Heroku::API.new(:api_key => api_token)
     end
 
     def restarts

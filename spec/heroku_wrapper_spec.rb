@@ -22,7 +22,7 @@ describe Whacamole::HerokuWrapper do
       req.should_receive(:[]=).with("Content-type", "application/json")
       req.should_receive(:[]=).with("Accept", "application/vnd.heroku+json; version=3")
       req.should_receive(:set_form_data).with({'tail' => true})
-      Net::HTTP.should_receive(:start).with("api.heroku.com", 443, use_ssl: true).and_return(OpenStruct.new(body: "{\"logplex_url\": \"https://api.heroku.com/log/session/url\"}"))
+      Net::HTTP.should_receive(:start).with("api.heroku.com", 443, use_ssl: true).and_return(OpenStruct.new(:body => "{\"logplex_url\": \"https://api.heroku.com/log/session/url\"}"))
       h.create_log_session.should == "https://api.heroku.com/log/session/url"
     end
   end
@@ -30,14 +30,14 @@ describe Whacamole::HerokuWrapper do
   describe "restart" do
     it "restarts the given process using the legacy api" do
       api = OpenStruct.new
-      Heroku::API.should_receive(:new).with(api_key: h.api_token) { api }
+      Heroku::API.should_receive(:new).with(:api_key => h.api_token) { api }
       api.should_receive(:post_ps_restart).with(h.app_name, "ps" => "web.2")
       h.restart("web.2")
     end
 
     it "respects the rate limit" do
       api = OpenStruct.new
-      Heroku::API.should_receive(:new).with(api_key: h.api_token) { api }
+      Heroku::API.should_receive(:new).with(:api_key => h.api_token) { api }
       api.should_receive(:post_ps_restart).once.with(h.app_name, "ps" => "web.1").ordered
       api.should_receive(:post_ps_restart).once.with(h.app_name, "ps" => "web.2").ordered
       h.restart("web.1")
