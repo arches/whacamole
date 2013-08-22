@@ -37,28 +37,21 @@ describe Whacamole::Stream do
     context "when memory usage is present" do
       it "surfaces the memory usage" do
         stream.dispatch_handlers <<-CHUNK
-          2013-08-21T21:57:15.513099+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=load_avg_5m val=0.51
-          2013-08-21T21:57:15.513333+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=load_avg_15m val=0.85
-          2013-08-21T21:57:15.513688+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_total val=766.50 units=MB
-          2013-08-21T21:57:15.513917+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_rss val=766.24 units=MB
-          2013-08-21T21:57:15.514150+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_cache val=0.23 units=MB
-          2013-08-21T21:57:15.514424+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_swap val=0.03 units=MB
-          2013-08-21T21:57:15.514678+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_pgpgin val=20074496 units=pages
-          2013-08-21T21:57:15.514993+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_pgpgout val=232692 units=pages
-          2013-08-21T21:57:15.515220+00:00 heroku[web.2]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=diskmbytes val=0 units=MB
-          2013-08-22T02:12:55.606811+00:00 app[web.3]: Aug 21 21:12:55 87f31b44-3f7d-4498-980b-55dd0036cb15 rails[16]: Oink Stream Entry Complete
-          2013-08-22T02:12:55.623226+00:00 heroku[router]: at=info method=GET path=/deals/buy-golding-farms-three-pepper-mustard-get-a-salad-dressing-free host=aisle50.com fwd="96.241.112.153" dyno=web.3 connect=1ms service=9540ms status=200 bytes=77295
-          2013-08-22T02:12:56.147898+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.772639.3b9979cf-2ec5-4d9a-a199-7d1826502a51 sample#load_avg_1m=0.00 sample#load_avg_5m=0.00 sample#load_avg_15m=0.00
-          2013-08-22T02:12:56.148063+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.772639.3b9979cf-2ec5-4d9a-a199-7d1826502a51 sample#memory_total=208.21MB sample#memory_rss=208.20MB sample#memory_cache=0.02MB sample#memory_swap=0.00MB sample#memory_pgpgin=79219pages sample#memory_pgpgout=25916pages
-          2013-08-22T02:12:56.148221+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.772639.3b9979cf-2ec5-4d9a-a199-7d1826502a51 sample#diskmbytes=0MB
-          2013-08-22T02:12:56.566701+00:00 app[web.3]: Started GET "/api/v1/deals/306/more_deals.jsonp?callback=jQuery17108417432008826902_1377137521677&generic=false&_=1377137523855" for 174.99.57.71 at 2013-08-21 21:12:56 -0500
-          2013-08-21T21:57:15.513688+00:00 heroku[web.90]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_total val=66 units=MB
+          2013-08-22T16:39:22.208103+00:00 heroku[router]: at=info method=GET path=/favicon.ico host=aisle50.com fwd="205.159.94.63" dyno=web.3 connect=1ms service=20ms status=200 bytes=894
+          2013-08-22T16:39:22.224847+00:00 heroku[router]: at=info method=GET path=/ host=www.aisle50.com fwd="119.63.193.132" dyno=web.3 connect=1ms service=5ms status=301 bytes=0
+          2013-08-22T16:39:22.919300+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#load_avg_1m=0.20 sample#load_avg_5m=0.33 sample#load_avg_15m=0.38
+          2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=581.95MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+          2013-08-22T16:39:22.919773+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#diskmbytes=0MB
+          2013-08-22T16:39:23.045250+00:00 heroku[web.1]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#load_avg_1m=0.24 sample#load_avg_5m=0.59
+          2013-08-22T16:39:23.045521+00:00 heroku[web.90]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#memory_total=66MB sample#memory_rss=471.21MB sample#memory_cache=0.05MB sample#memory_swap=0.02MB sample#memory_pgpgin=0pages sample#memory_pgpgout=145277pages
+          2013-08-22T16:39:23.045789+00:00 heroku[web.1]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#diskmbytes=0MB
+          2013-08-22T16:39:23.364649+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.772639.ae391b5d-e776-43f9-b056-360912563d61 sample#load_avg_1m=0.00 sample#load_avg_5m=0.01 sample#load_avg_15m=0.02
         CHUNK
 
         eh.events.length.should == 2
 
         eh.events.first.should be_a Whacamole::Events::DynoSize
-        eh.events.first.size.should == 766.50
+        eh.events.first.size.should == 581.95
         eh.events.first.units.should == "MB"
         eh.events.first.process.should == "web.2"
 
@@ -71,9 +64,9 @@ describe Whacamole::Stream do
 
     context "when memory usages is over the threshold" do
       it "kicks off a restart" do
-        restart_handler.should_receive(:restart).with("web.1")
+        restart_handler.should_receive(:restart).with("web.2")
         stream.dispatch_handlers <<-CHUNK
-          2013-08-21T21:57:15.513688+00:00 heroku[web.1]: source=heroku.772639.web.2.c04b10ff-4903-43cb-9de2-90f8a4fbf2f1 measure=memory_total val=1001 units=MB
+          2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=1001MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
         CHUNK
       end
     end
