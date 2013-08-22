@@ -36,5 +36,3 @@ module Whacamole
   end
 end
 
-#  uri = URI("https://api.heroku.com/apps/a50-production/log-sessions")
-
