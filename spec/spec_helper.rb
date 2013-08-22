@@ -1,5 +1,6 @@
 gem 'rspec'
 require 'ostruct'
+require 'whacamole'
 
 RSpec.configure do |c|
   c.color = true

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../lib/whacamole/events'
 
 describe "DynoSize" do
   let (:e) { Whacamole::Events::DynoSize.new }

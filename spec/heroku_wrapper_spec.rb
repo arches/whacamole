@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../lib/whacamole/heroku_wrapper'
 
 describe Whacamole::HerokuWrapper do
   let(:h) { Whacamole::HerokuWrapper.new }

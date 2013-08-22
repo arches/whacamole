@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../lib/whacamole/stream'
 
 class EventHandler
   attr_accessor :events
