@@ -26,7 +26,7 @@ module Whacamole
 
     def dispatch_handlers(chunk)
       memory_size_from_chunk(chunk).each do |dyno, size|
-        event = Events::DynoSize.new({process: dyno, size: size, units: "MB"})
+        event = Events::DynoSize.new({:process => dyno, :size => size, :units => "MB"})
         event_handler.call(event)
 
         if event.size > restart_threshold
