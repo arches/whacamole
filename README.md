@@ -1,7 +1,7 @@
 whacamole
 =========
 
-[![Build Status](https://travis-ci.org/arches/whacamole.png?branch=oo)](https://travis-ci.org/arches/whacamole)
+[![Build Status](https://travis-ci.org/arches/whacamole.png)](https://travis-ci.org/arches/whacamole)
 
 Here’s what Heroku says about dyno memory usage:
 
