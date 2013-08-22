@@ -49,7 +49,7 @@ module Whacamole
     end
 
     def restarts
-      @restarts ||= Hash.new(Time.now - RESTART_RATE_LIMIT*2)
+      @restarts ||= Hash.new { Time.now - RESTART_RATE_LIMIT*2 }
     end
   end
 end
