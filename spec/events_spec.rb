@@ -27,7 +27,7 @@ describe "DynoSize" do
 
   describe "initialization" do
     it "sets the variables from the input hash" do
-      e = Whacamole::Events::DynoSize.new({size: "766.65", units: "MB", process: "web.2"})
+      e = Whacamole::Events::DynoSize.new({:size => "766.65", :units => "MB", :process => "web.2"})
       e.size.should == 766.65
       e.units.should == "MB"
       e.process.should == "web.2"
