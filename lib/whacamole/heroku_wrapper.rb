@@ -16,7 +16,7 @@ module Whacamole
       req['Content-type'] = content_type
       req['Accept'] = accept
       req.set_form_data({'tail' => true})
-      res = Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == "https")) {|http| http.request(req)}
+      res = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == "https")) {|http| http.request(req)}
       JSON.parse(res.body)['logplex_url']
     end
 
