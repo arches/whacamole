@@ -7,6 +7,8 @@ module Whacamole
   class HerokuWrapper
     attr_accessor :api_token, :app_name
 
+    RESTART_RATE_LIMIT = 30*60
+
     def create_log_session
       uri = URI(log_sessions_url)
       req = Net::HTTP::Post.new(uri.path)
@@ -23,7 +25,10 @@ module Whacamole
     end
 
     def restart(process)
+      return if restarts[process] > (Time.now - RESTART_RATE_LIMIT)
+
       legacy_api.post_ps_restart(process, app_name)
+      restarts[process] = Time.now
     end
 
     private
@@ -40,7 +45,11 @@ module Whacamole
     end
 
     def legacy_api
-      Heroku::API.new(api_key: api_token)
+      @legacy_api ||= Heroku::API.new(api_key: api_token)
+    end
+
+    def restarts
+      @restarts ||= Hash.new(Time.now - RESTART_RATE_LIMIT*2)
     end
   end
 end

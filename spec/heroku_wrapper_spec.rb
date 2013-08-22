@@ -35,5 +35,15 @@ describe Whacamole::HerokuWrapper do
       api.should_receive(:post_ps_restart).with("web.2", h.app_name)
       h.restart("web.2")
     end
+
+    it "respects the rate limit" do
+      api = OpenStruct.new
+      Heroku::API.should_receive(:new).with(api_key: h.api_token) { api }
+      api.should_receive(:post_ps_restart).once.with("web.1", h.app_name).ordered
+      api.should_receive(:post_ps_restart).once.with("web.2", h.app_name).ordered
+      h.restart("web.1")
+      h.restart("web.1")
+      h.restart("web.2")
+    end
   end
 end
