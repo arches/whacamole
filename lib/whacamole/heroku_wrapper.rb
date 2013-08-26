@@ -1,7 +1,6 @@
 require 'base64'
 require 'net/http'
 require 'json'
-require 'heroku-api'
 
 module Whacamole
   class HerokuWrapper
@@ -25,10 +24,20 @@ module Whacamole
     end
 
     def restart(process)
-      return if restarts[process] > (Time.now - RESTART_RATE_LIMIT)
+      return if recently_restarted?(process)
 
-      legacy_api.post_ps_restart(app_name, "ps" => process)
+      uri = URI(dyno_url(process))
+      req = Net::HTTP::Delete.new(uri.path)
+      req['Authorization'] = authorization
+      req['Content-type'] = content_type
+      req['Accept'] = accept
+      res = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == "https")) {|http| http.request(req)}
+
       restarts[process] = Time.now
+    end
+
+    def recently_restarted?(process)
+      restarts[process] > (Time.now - RESTART_RATE_LIMIT)
     end
 
     private
@@ -44,8 +53,8 @@ module Whacamole
       "https://api.heroku.com/apps/#{app_name}/log-sessions"
     end
 
-    def legacy_api
-      @legacy_api ||= Heroku::API.new(:api_key => api_token)
+    def dyno_url(process)
+      "https://api.heroku.com/apps/#{app_name}/dynos/#{process}"
     end
 
     def restarts
