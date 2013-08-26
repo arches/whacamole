@@ -5,7 +5,7 @@ PATH
       heroku-api (~> 0.3.15)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.4)
     excon (0.25.3)
