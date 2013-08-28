@@ -35,14 +35,14 @@ describe Whacamole::HerokuWrapper do
       req.should_receive(:[]=).with("Content-type", "application/json")
       req.should_receive(:[]=).with("Accept", "application/vnd.heroku+json; version=3")
       Net::HTTP.should_receive(:start).with("api.heroku.com", 443, use_ssl: true)
-      h.restart("web.3")
+      h.restart("web.3").should be_true
     end
 
     it "respects the rate limit" do
       Net::HTTP::Delete.should_not_receive(:new)
 
       h.stub(:recently_restarted? => true)
-      h.restart("web.2")
+      h.restart("web.2").should be_false
     end
   end
 end

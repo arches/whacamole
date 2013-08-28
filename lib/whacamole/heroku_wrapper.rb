@@ -24,7 +24,7 @@ module Whacamole
     end
 
     def restart(process)
-      return if recently_restarted?(process)
+      return false if recently_restarted?(process)
 
       uri = URI(dyno_url(process))
       req = Net::HTTP::Delete.new(uri.path)
@@ -34,6 +34,8 @@ module Whacamole
       res = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == "https")) {|http| http.request(req)}
 
       restarts[process] = Time.now
+
+      true
     end
 
     def recently_restarted?(process)
