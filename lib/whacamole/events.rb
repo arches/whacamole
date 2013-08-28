@@ -18,6 +18,9 @@ module Whacamole
         @size = size.to_f
       end
     end
+
+    class DynoRestart < Event
+    end
   end
 end
 

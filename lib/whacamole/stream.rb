@@ -29,15 +29,25 @@ module Whacamole
         event = Events::DynoSize.new({:process => dyno, :size => size, :units => "MB"})
         event_handler.call(event)
 
-        if event.size > restart_threshold
-          restart_handler.restart(event.process)
-        end
+        restart(event.process) if restart_necessary?(event)
       end
 
       # TODO: handle R14 errors here also
     end
 
     private
+    def restart(process)
+      restarted = restart_handler.restart(process)
+
+      if restarted
+        event_handler.call( Events::DynoRestart.new({:process => process}) )
+      end
+    end
+
+    def restart_necessary?(event)
+      event.size > restart_threshold
+    end
+
     def memory_size_from_chunk(chunk)
       sizes = []
       chunk.split("\n").select{|line| line.include? "sample#memory_total"}.each do |line|

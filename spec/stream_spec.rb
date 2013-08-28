@@ -14,6 +14,7 @@ end
 
 class RestartHandler
   def restart(process)
+    true
   end
 end
 
@@ -67,6 +68,16 @@ describe Whacamole::Stream do
         stream.dispatch_handlers <<-CHUNK
           2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=1001MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
         CHUNK
+      end
+
+      it "surfaces the restart" do
+        stream.dispatch_handlers <<-CHUNK
+          2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=1001MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+        CHUNK
+
+        restart = eh.events.last
+        restart.should be_a Whacamole::Events::DynoRestart
+        restart.process.should == "web.2"
       end
     end
   end
