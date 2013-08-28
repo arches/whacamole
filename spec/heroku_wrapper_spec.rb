@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# TODO: use VCR instead of these method expectations
 describe Whacamole::HerokuWrapper do
   let(:h) { Whacamole::HerokuWrapper.new }
 
