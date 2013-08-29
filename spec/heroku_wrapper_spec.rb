@@ -2,12 +2,7 @@ require 'spec_helper'
 
 # TODO: use VCR instead of these method expectations
 describe Whacamole::HerokuWrapper do
-  let(:h) { Whacamole::HerokuWrapper.new }
-
-  before do
-    h.api_token = "foobar"
-    h.app_name = "staging"
-  end
+  let(:h) { Whacamole::HerokuWrapper.new("staging", "foobar") }
 
   describe "authorization" do
     it "base64-encodes the api token and a preceding colon" do

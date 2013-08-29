@@ -8,6 +8,11 @@ module Whacamole
 
     RESTART_RATE_LIMIT = 30*60
 
+    def initialize(app_name, api_token)
+      self.app_name = app_name
+      self.api_token = api_token
+    end
+
     def create_log_session
       uri = URI(log_sessions_url)
       req = Net::HTTP::Post.new(uri.path)
