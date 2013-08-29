@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'whacamole'
+$stdout.sync = true
+
+if ARGV[0] == "-c"
+  require ARGV[1]
+
+  Whacamole.monitor
+else
+  puts "No Whacamole config specified. Use `whacamole -c path/to/config`\nSee http://github.com/arches/whacamole for usage."
+end
+

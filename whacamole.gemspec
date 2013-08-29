@@ -18,6 +18,8 @@ Gem::Specification.new do |gem|
   gem.test_files          = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths       = ["lib"]
 
+  gem.executables         = ['whacamole']
+
   gem.add_development_dependency 'rspec', '~> 2.11'
   gem.add_development_dependency 'rake', '~> 10.1'
 end
