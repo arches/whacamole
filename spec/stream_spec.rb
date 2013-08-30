@@ -37,15 +37,20 @@ describe Whacamole::Stream do
     context "when memory usage is present" do
       it "surfaces the memory usage" do
         stream.dispatch_handlers <<-CHUNK
+          ## NEW LOG FORMAT
           2013-08-22T16:39:22.208103+00:00 heroku[router]: at=info method=GET path=/favicon.ico host=aisle50.com fwd="205.159.94.63" dyno=web.3 connect=1ms service=20ms status=200 bytes=894
           2013-08-22T16:39:22.224847+00:00 heroku[router]: at=info method=GET path=/ host=www.aisle50.com fwd="119.63.193.132" dyno=web.3 connect=1ms service=5ms status=301 bytes=0
           2013-08-22T16:39:22.919300+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#load_avg_1m=0.20 sample#load_avg_5m=0.33 sample#load_avg_15m=0.38
           2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=581.95MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
           2013-08-22T16:39:22.919773+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#diskmbytes=0MB
           2013-08-22T16:39:23.045250+00:00 heroku[web.1]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#load_avg_1m=0.24 sample#load_avg_5m=0.59
-          2013-08-22T16:39:23.045521+00:00 heroku[web.90]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#memory_total=66MB sample#memory_rss=471.21MB sample#memory_cache=0.05MB sample#memory_swap=0.02MB sample#memory_pgpgin=0pages sample#memory_pgpgout=145277pages
           2013-08-22T16:39:23.045789+00:00 heroku[web.1]: source=web.1 dyno=heroku.772639.4c9dcf54-f339-4d81-9756-8dad47f178a4 sample#diskmbytes=0MB
           2013-08-22T16:39:23.364649+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.772639.ae391b5d-e776-43f9-b056-360912563d61 sample#load_avg_1m=0.00 sample#load_avg_5m=0.01 sample#load_avg_15m=0.02
+
+          ## OLD LOG FORMAT
+          2013-08-30T14:39:57.132272+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=load_avg_1m val=0.00
+          2013-08-30T14:39:57.132782+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=load_avg_15m val=0.20
+          2013-08-30T14:39:57.133012+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=memory_total val=509 units=MB
         CHUNK
 
         eh.events.length.should == 2
@@ -56,9 +61,9 @@ describe Whacamole::Stream do
         eh.events.first.process.should == "web.2"
 
         eh.events.last.should be_a Whacamole::Events::DynoSize
-        eh.events.last.size.should == 66.0
+        eh.events.last.size.should == 509
         eh.events.last.units.should == "MB"
-        eh.events.last.process.should == "web.90"
+        eh.events.last.process.should == "web.1"
       end
     end
 

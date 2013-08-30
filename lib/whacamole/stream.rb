@@ -50,12 +50,23 @@ module Whacamole
 
     def memory_size_from_chunk(chunk)
       sizes = []
+
+      # new log format
       chunk.split("\n").select{|line| line.include? "sample#memory_total"}.each do |line|
         dyno = line.match(/web\.\d+/)
         next unless dyno
         size = line.match(/sample#memory_total=([\d\.]+)/)
         sizes << [dyno[0], size[1]]
       end
+
+      # old log format
+      chunk.split("\n").select{|line| line.include? "measure=memory_total"}.each do |line|
+        dyno = line.match(/web\.\d+/)
+        next unless dyno
+        size = line.match(/val=([\d\.]+)/)
+        sizes << [dyno[0], size[1]]
+      end
+
       sizes
     end
 
