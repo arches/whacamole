@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.email               = "archslide@gmail.com"
 
   gem.description         = "Whacamole"
-  gem.summary             = ""
+  gem.summary             = "restart heroku dynos that run out of RAM instead of swapping to disk"
   gem.homepage            = "http://github.com/arches/whacamole"
   gem.version             = Whacamole::VERSION
   gem.license             = 'MIT'
