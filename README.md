@@ -84,3 +84,9 @@ Whacamole.configure("HEROKU APP NAME") do |config|
   end
 end
 ```
+
+## Self Promotion
+
+If you like Whacamole, help spread the word! Tell your friends, or at the very least star the repo on github.
+
+For more heroku goodness, check out http://github.com/arches/table_print and http://github.com/arches/marco-polo
