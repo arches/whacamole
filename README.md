@@ -8,15 +8,15 @@ swapping to disk (aka get super slow).
 
 Here’s what Heroku says about dyno memory usage:
 
-> Dynos are available in 1X or 2X sizes and are allocated 512MB or 1024MB respectively.
+> Dynos are available in a few different sizes. The maximum amount of RAM available to your application depends on the dyno size you use.
 >
 > Dynos whose processes exceed their memory quota are identified by an R14 error in the logs. This doesn’t terminate the process, but it does warn of deteriorating application conditions: memory used above quota will swap out to disk, which substantially degrades dyno performance.
+> 
+> If the memory size of your dyno keeps growing until it reaches five times its quota (for a 1X dyno, 512MB x 5 = 2.5GB), the dyno manager will restart your dyno with an R15 error.
 >
-> If the memory size keeps growing until it reaches three times its quota, the dyno manager will restart your dyno with an R15 error.
->
-> - From https://devcenter.heroku.com/articles/dynos on 8/8/13
+> - From https://devcenter.heroku.com/articles/dynos on 3/12/14
 
-Heroku dynos swap to disk for up to 3GB. That is not good and that is the problem whacamole addresses.
+Heroku dynos swap to disk for up to 5GB (2X dynos) or up to THIRTY GIGABYTES (PX dynos). That is not good and that is the problem whacamole addresses.
 
 # Usage
 
