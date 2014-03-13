@@ -62,3 +62,25 @@ $ foreman start whacamole
 # on heroku
 $ heroku ps:scale whacamole=1 --app YOUR_APP_NAME
 ```
+
+# Events
+
+Each ping and restart is available to you, for example in case you want to see with your own eyes that it's working.
+
+Methods on DynoSize events
+ * event.process (the heroku process, eg "web.1")
+ * event.size (dyno size, eg 444.06)
+ * event.units (units for the size, eg "MB")
+
+Methods on DynoRestart events
+  * event.process (the heroku process, eg "web.1")
+  
+To access the events, add a handler in your config. Event handlers take a single argument, the event. This handler will log the event in your Heroku logs:
+
+```ruby
+Whacamole.configure("HEROKU APP NAME") do |config|
+  config.event_handler = lambda do |e|
+    puts e.inspect.to_s
+  end
+end
+```
