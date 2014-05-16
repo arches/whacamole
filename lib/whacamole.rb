@@ -20,7 +20,7 @@ module Whacamole
 
         while true
           stream_url = heroku.create_log_session
-          Stream.new(stream_url, heroku, &config.event_handler).watch
+          Stream.new(stream_url, heroku, config.restart_threshold, &config.event_handler).watch
         end
       end
     end
