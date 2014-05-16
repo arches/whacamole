@@ -28,6 +28,19 @@ describe Whacamole do
         config.api_token.should == "prod token"
       end
     end
+
+    it "accepts a threshold override per config" do
+      Whacamole.configure("production") do |config|
+        config.api_token = "prod token"
+        config.restart_threshold.should == 1000
+        config.restart_threshold = 500
+      end
+      Whacamole.configure("production") do |config|
+        config.api_token = "prod token"
+        config.restart_threshold.should == 500
+      end
+
+    end
   end
 end
 
