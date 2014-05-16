@@ -26,7 +26,7 @@ describe Whacamole::Stream do
   let(:eh) { EventHandler.new }
   let(:restart_handler) { RestartHandler.new }
   let(:stream) do
-    Whacamole::Stream.new("https://api.heroku.com/path/to/stream/stream", restart_handler) do |event|
+    Whacamole::Stream.new("https://api.heroku.com/path/to/stream/stream", restart_handler, 1000) do |event|
       eh.process(event)
     end
   end
