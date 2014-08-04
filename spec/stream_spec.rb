@@ -67,8 +67,17 @@ describe Whacamole::Stream do
       end
     end
 
+    it "detects H12 errors" do
+      stream.dispatch_handlers <<-CHUNK
+      03:55:30.011 2014-08-04 10:55:29.960057+00:00 heroku router - - at=error code=H12 desc="Request timeout" method=PUT path="/api/products/2656696" host=app.sellbrite.com request_id=3e1994f1-87db-48af-9522-a734750e8912 fwd="72.239.142.89/72-239-142-89.res.bhn.net" dyno=web.1 connect=2ms service=30000ms status=503 bytes=0 CriticalHigh Response Time
+      CHUNK
+      eh.events.length.should == 1
+      eh.events.first.should be_a Whacamole::Events::DynoRestart
+      eh.events.first.process.should == 'web.1'
+    end
 
-    it "surfaces memory usage for workers too" do
+
+    pending "surfaces memory usage for workers too" do
       stream.dispatch_handlers <<-CHUNK
         2014-05-15T17:33:51.344129+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.18581254.cf4830ae-9134-456e-9375-3de3555eb134 sample#load_avg_1m=0.47 sample#load_avg_5m=0.66 sample#load_avg_15m=0.63
         2014-05-15T17:33:51.344396+00:00 heroku[worker.1]: source=worker.1 dyno=heroku.18581254.cf4830ae-9134-456e-9375-3de3555eb134 sample#memory_total=541.75MB sample#memory_rss=540.04MB sample#memory_cache=1.63MB sample#memory_swap=0.07MB sample#memory_pgpgin=311837pages sample#memory_pgpgout=173169pages

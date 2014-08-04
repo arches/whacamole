@@ -24,6 +24,11 @@ module Whacamole
     end
 
     def dispatch_handlers(chunk)
+
+      chunk.split("\n").select{|line| line.match(/sample#memory_total|code=H12/)}.each do |line|
+        puts line
+      end
+
       memory_size_from_chunk(chunk).each do |dyno, size|
         event = Events::DynoSize.new({:process => dyno, :size => size, :units => "MB"})
         event_handler.call(event)
@@ -32,6 +37,11 @@ module Whacamole
       end
 
       # TODO: handle R14 errors here also
+      # handle R12
+      restart_on_error_code(chunk).each do |dyno|
+        restart(dyno)
+      end
+
     end
 
     private
@@ -45,6 +55,18 @@ module Whacamole
 
     def restart_necessary?(event)
       event.size > restart_threshold
+    end
+
+    def restart_on_error_code(chunk)
+      timeouts = []
+
+      # new log format
+      chunk.split("\n").select{|line| line.include? "code=H12"}.each do |line|
+        dyno = line.match(/(web|worker)\.\d+/)
+        next unless dyno
+        timeouts << dyno[0]
+      end
+      timeouts
     end
 
     def memory_size_from_chunk(chunk)
