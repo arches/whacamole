@@ -25,10 +25,6 @@ module Whacamole
 
     def dispatch_handlers(chunk)
 
-      chunk.split("\n").select{|line| line.match(/sample#memory_total|code=H12/)}.each do |line|
-        puts line
-      end
-
       memory_size_from_chunk(chunk).each do |dyno, size|
         event = Events::DynoSize.new({:process => dyno, :size => size, :units => "MB"})
         event_handler.call(event)
@@ -38,9 +34,6 @@ module Whacamole
 
       # TODO: handle R14 errors here also
       # handle R12
-      restart_on_error_code(chunk).each do |dyno|
-        restart(dyno)
-      end
 
     end
 
@@ -57,36 +50,34 @@ module Whacamole
       event.size > restart_threshold
     end
 
-    def restart_on_error_code(chunk)
-      timeouts = []
-
-      # new log format
-      chunk.split("\n").select{|line| line.include? "code=H12"}.each do |line|
-        dyno = line.match(/(web|worker)\.\d+/)
-        next unless dyno
-        timeouts << dyno[0]
-      end
-      timeouts
-    end
-
     def memory_size_from_chunk(chunk)
       sizes = []
 
       # new log format
-      chunk.split("\n").select{|line| line.include? "sample#memory_total"}.each do |line|
+      chunk.split("\n").select{|line| line.match "sample#memory_total|code=H12"}.each do |line|
         dyno = line.match(/(web|worker)\.\d+/)
         next unless dyno
-        size = line.match(/sample#memory_total=([\d\.]+)/)
+        code = line.match('code=H12')
+        if code
+          size = [5000,5000] #force a restart
+        else
+          size = line.match(/sample#memory_total=([\d\.]+)/)
+        end
         sizes << [dyno[0], size[1]]
       end
 
       # old log format
-      chunk.split("\n").select{|line| line.include? "measure=memory_total"}.each do |line|
-        dyno = line.match(/(web|worker)\.\d+/)
-        next unless dyno
-        size = line.match(/val=([\d\.]+)/)
-        sizes << [dyno[0], size[1]]
-      end
+      # chunk.split("\n").select{|line| line.include? "measure=memory_total|code=H12"}.each do |line|
+      #   dyno = line.match(/(web|worker)\.\d+/)
+      #   next unless dyno
+      #   code = line.match('code=H12')
+      #   if code
+      #     size = 5000
+      #   else
+      #     size = line.match(/val=([\d\.]+)/)
+      #   end
+      #   sizes << [dyno[0], size[1]]
+      # end
 
       sizes
     end
