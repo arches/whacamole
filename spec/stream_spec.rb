@@ -16,6 +16,10 @@ class RestartHandler
   def restart(process)
     true
   end
+
+  def dynos
+    %w{web worker}
+  end
 end
 
 describe Whacamole::Stream do
@@ -65,6 +69,19 @@ describe Whacamole::Stream do
         eh.events.last.units.should == "MB"
         eh.events.last.process.should == "web.1"
       end
+    end
+
+    it "handles dyno types specified in restart handler" do
+      stream.dispatch_handlers <<-CHUNK
+          2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=101MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+          2013-08-22T16:39:22.919536+00:00 heroku[worker.3]: source=worker.3 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=101MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+          2013-08-22T16:39:22.919536+00:00 heroku[whacamole.1]: source=whacamole.1 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=1001MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+      CHUNK
+
+      eh.events.length.should == 2
+
+      eh.events.first.process.should == "web.2"
+      eh.events.last.process.should == "worker.3"
     end
 
     context "when memory usages is over the threshold" do

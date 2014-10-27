@@ -45,6 +45,12 @@ end
 Whacamole.configure("ANOTHER HEROKU APP") do |config|
   config.api_token = ENV['HEROKU_API_TOKEN'] # you could also paste your token in here as a string
 end
+
+# you can specify which dynos to watch for each app (default: `web`):
+Whacamole.configure("HEROKU APP WITH MULTIPLE DYNO TYPES") do |config|
+  config.api_token = ENV['HEROKU_API_TOKEN'] # you could also paste your token in here as a string
+  config.dynos = %w{web worker}
+end
 ```
 
 Add whacamole to your Procfile, specifying the config file you created:

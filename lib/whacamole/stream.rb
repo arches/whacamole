@@ -9,6 +9,7 @@ module Whacamole
     def initialize(url, restart_handler, &blk)
       @url = url
       @restart_handler = restart_handler
+      @dynos = restart_handler.dynos
       @event_handler = blk
     end
 
@@ -50,10 +51,11 @@ module Whacamole
 
     def memory_size_from_chunk(chunk)
       sizes = []
+      dynos_regexp = Regexp.new('(' + @dynos.join('|') + ')\.\d+')
 
       # new log format
       chunk.split("\n").select{|line| line.include? "sample#memory_total"}.each do |line|
-        dyno = line.match(/web\.\d+/)
+        dyno = line.match(dynos_regexp)
         next unless dyno
         size = line.match(/sample#memory_total=([\d\.]+)/)
         sizes << [dyno[0], size[1]]
@@ -61,7 +63,7 @@ module Whacamole
 
       # old log format
       chunk.split("\n").select{|line| line.include? "measure=memory_total"}.each do |line|
-        dyno = line.match(/web\.\d+/)
+        dyno = line.match(dynos_regexp)
         next unless dyno
         size = line.match(/val=([\d\.]+)/)
         sizes << [dyno[0], size[1]]
@@ -87,6 +89,3 @@ module Whacamole
     end
   end
 end
-
-
-

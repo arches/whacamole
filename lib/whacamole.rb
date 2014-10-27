@@ -16,7 +16,7 @@ module Whacamole
     threads = []
     @@config.each do |app_name, config|
       threads << Thread.new do
-        heroku = HerokuWrapper.new(app_name, config.api_token)
+        heroku = HerokuWrapper.new(app_name, config.api_token, config.dynos)
 
         while true
           stream_url = heroku.create_log_session
@@ -27,4 +27,3 @@ module Whacamole
     threads.collect(&:join)
   end
 end
-

@@ -4,13 +4,14 @@ require 'json'
 
 module Whacamole
   class HerokuWrapper
-    attr_accessor :api_token, :app_name
+    attr_accessor :api_token, :app_name, :dynos
 
     RESTART_RATE_LIMIT = 30*60
 
-    def initialize(app_name, api_token)
+    def initialize(app_name, api_token, dynos)
       self.app_name = app_name
       self.api_token = api_token
+      self.dynos = dynos
     end
 
     def create_log_session
@@ -69,4 +70,3 @@ module Whacamole
     end
   end
 end
-
