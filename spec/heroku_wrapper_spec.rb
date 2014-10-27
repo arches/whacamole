@@ -2,7 +2,13 @@ require 'spec_helper'
 
 # TODO: use VCR instead of these method expectations
 describe Whacamole::HerokuWrapper do
-  let(:h) { Whacamole::HerokuWrapper.new("staging", "foobar") }
+  let(:h) { Whacamole::HerokuWrapper.new("staging", "foobar", %w{web worker}) }
+
+  describe "dynos" do
+    it "returns dyno types to monitor as given to initialize" do
+      h.dynos.should == %w{web worker}
+    end
+  end
 
   describe "authorization" do
     it "base64-encodes the api token and a preceding colon" do
