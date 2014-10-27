@@ -58,7 +58,7 @@ module Whacamole
         dyno = line.match(dynos_regexp)
         next unless dyno
         size = line.match(/sample#memory_total=([\d\.]+)/)
-        sizes << [dyno[0], size[1]]
+        sizes << [dyno[0], size[1]] unless size.nil?
       end
 
       # old log format
@@ -66,7 +66,7 @@ module Whacamole
         dyno = line.match(dynos_regexp)
         next unless dyno
         size = line.match(/val=([\d\.]+)/)
-        sizes << [dyno[0], size[1]]
+        sizes << [dyno[0], size[1]] unless size.nil?
       end
 
       sizes
