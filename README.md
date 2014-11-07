@@ -50,6 +50,7 @@ end
 Whacamole.configure("HEROKU APP WITH MULTIPLE DYNO TYPES") do |config|
   config.api_token = ENV['HEROKU_API_TOKEN'] # you could also paste your token in here as a string
   config.dynos = %w{web worker}
+  config.restart_threshold = 500 # in megabytes. default is 1000 (good for 2X dynos)
 end
 ```
 
