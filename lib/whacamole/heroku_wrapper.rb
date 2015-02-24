@@ -4,14 +4,13 @@ require 'json'
 
 module Whacamole
   class HerokuWrapper
-    attr_accessor :api_token, :app_name, :dynos
+    attr_accessor :api_token, :app_name, :dynos, :restart_window
 
-    RESTART_RATE_LIMIT = 30*60
-
-    def initialize(app_name, api_token, dynos)
+    def initialize(app_name, api_token, dynos, restart_window)
       self.app_name = app_name
       self.api_token = api_token
       self.dynos = dynos
+      self.restart_window = restart_window
     end
 
     def create_log_session
@@ -45,7 +44,7 @@ module Whacamole
     end
 
     def recently_restarted?(process)
-      restarts[process] > (Time.now - RESTART_RATE_LIMIT)
+      restarts[process] > (Time.now - restart_window)
     end
 
     private
@@ -66,7 +65,7 @@ module Whacamole
     end
 
     def restarts
-      @restarts ||= Hash.new { Time.now - RESTART_RATE_LIMIT*2 }
+      @restarts ||= Hash.new { Time.now - restart_window*2 }
     end
   end
 end

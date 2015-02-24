@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # TODO: use VCR instead of these method expectations
 describe Whacamole::HerokuWrapper do
-  let(:h) { Whacamole::HerokuWrapper.new("staging", "foobar", %w{web worker}) }
+  let(:h) { Whacamole::HerokuWrapper.new("staging", "foobar", %w{web worker}, Whacamole::Config::RESTART_RATE_LIMIT) }
 
   describe "dynos" do
     it "returns dyno types to monitor as given to initialize" do
