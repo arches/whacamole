@@ -12,10 +12,14 @@ module Whacamole
 
     class DynoSize < Event
       attr_accessor :units
-      attr_reader :size
+      attr_reader :total_size, :swap_size
 
-      def size=(size)
-        @size = size.to_f
+      def total_size=(size)
+        @total_size = size.to_f if size
+      end
+
+      def swap_size=(size)
+        @swap_size = size.to_f if size
       end
     end
 

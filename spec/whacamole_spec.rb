@@ -32,12 +32,12 @@ describe Whacamole do
     it "accepts a threshold override per config" do
       Whacamole.configure("production") do |config|
         config.api_token = "prod token"
-        config.restart_threshold.should == 1000
-        config.restart_threshold = 500
+        config.restart_threshold[:total].should == 1000
+        config.restart_threshold[:total] = 500
       end
       Whacamole.configure("production") do |config|
         config.api_token = "prod token"
-        config.restart_threshold.should == 500
+        config.restart_threshold[:total].should == 500
       end
 
     end
