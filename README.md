@@ -4,7 +4,7 @@ whacamole
 [![Build Status](https://travis-ci.org/arches/whacamole.png)](https://travis-ci.org/arches/whacamole)
 
 Whacamole keeps track of your Heroku dynos' memory usage and restarts large dynos before they start
-swapping to disk (aka get super slow).
+swapping to disk (aka get super slow) or when the swap size exceeds a certain limit.
 
 Here’s what Heroku says about dyno memory usage:
 
@@ -50,7 +50,7 @@ end
 Whacamole.configure("HEROKU APP WITH MULTIPLE DYNO TYPES") do |config|
   config.api_token = ENV['HEROKU_API_TOKEN'] # you could also paste your token in here as a string
   config.dynos = %w{web worker}
-  config.restart_threshold = 500 # in megabytes. default is 1000 (good for 2X dynos)
+  config.restart_threshold = { total: 500, swap: 50 } # in megabytes. default is 1000 for total (good for 2X dynos), nil for swap
 end
 ```
 
@@ -76,7 +76,8 @@ Each ping and restart is available to you, for example in case you want to see w
 
 Methods on DynoSize events
  * event.process (the heroku process, eg "web.1")
- * event.size (dyno size, eg 444.06)
+ * event.total_size (dyno size, eg 444.06)
+ * event.swap_size (swap size, eg 12.01)
  * event.units (units for the size, eg "MB")
 
 Methods on DynoRestart events

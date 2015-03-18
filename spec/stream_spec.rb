@@ -26,7 +26,7 @@ describe Whacamole::Stream do
   let(:eh) { EventHandler.new }
   let(:restart_handler) { RestartHandler.new }
   let(:stream) do
-    Whacamole::Stream.new("https://api.heroku.com/path/to/stream/stream", restart_handler, 1000) do |event|
+    Whacamole::Stream.new("https://api.heroku.com/path/to/stream/stream", restart_handler, {total: 1000, swap: 50}) do |event|
       eh.process(event)
     end
   end
@@ -55,19 +55,31 @@ describe Whacamole::Stream do
           2013-08-30T14:39:57.132272+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=load_avg_1m val=0.00
           2013-08-30T14:39:57.132782+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=load_avg_15m val=0.20
           2013-08-30T14:39:57.133012+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=memory_total val=509 units=MB
+          2013-08-30T14:39:57.133012+00:00 heroku[web.1]: source=heroku.772639.web.1.50578a75-9052-4e14-ac30-ba3686750017 measure=memory_swap val=0.12 units=MB
         CHUNK
 
-        eh.events.length.should == 2
+        eh.events.length.should == 3
 
-        eh.events.first.should be_a Whacamole::Events::DynoSize
-        eh.events.first.size.should == 581.95
-        eh.events.first.units.should == "MB"
-        eh.events.first.process.should == "web.2"
+        # New log format
+        eh.events[0].should be_a Whacamole::Events::DynoSize
+        eh.events[0].total_size.should == 581.95
+        eh.events[0].swap_size.should == 0.03
+        eh.events[0].units.should == "MB"
+        eh.events[0].process.should == "web.2"
 
-        eh.events.last.should be_a Whacamole::Events::DynoSize
-        eh.events.last.size.should == 509
-        eh.events.last.units.should == "MB"
-        eh.events.last.process.should == "web.1"
+        # Old log format - Total Memory event
+        eh.events[1].should be_a Whacamole::Events::DynoSize
+        eh.events[1].total_size.should == 509
+        eh.events[1].swap_size.should == nil
+        eh.events[1].units.should == "MB"
+        eh.events[1].process.should == "web.1"
+
+        # Old log format - Swap Memory event
+        eh.events[2].should be_a Whacamole::Events::DynoSize
+        eh.events[2].total_size.should == nil
+        eh.events[2].swap_size.should == 0.12
+        eh.events[2].units.should == "MB"
+        eh.events[2].process.should == "web.1"
       end
     end
 
@@ -85,10 +97,17 @@ describe Whacamole::Stream do
     end
 
     context "when memory usages is over the threshold" do
-      it "kicks off a restart" do
+      it "kicks off a restart on memory total limit" do
         restart_handler.should_receive(:restart).with("web.2")
         stream.dispatch_handlers <<-CHUNK
           2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=1001MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=0.03MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
+        CHUNK
+      end
+
+      it "kicks off a restart on memory swap limit" do
+        restart_handler.should_receive(:restart).with("web.2")
+        stream.dispatch_handlers <<-CHUNK
+          2013-08-22T16:39:22.919536+00:00 heroku[web.2]: source=web.2 dyno=heroku.772639.a334caa8-736c-48b3-bac2-d366f75d7fa0 sample#memory_total=800MB sample#memory_rss=581.75MB sample#memory_cache=0.16MB sample#memory_swap=51.3MB sample#memory_pgpgin=0pages sample#memory_pgpgout=179329pages
         CHUNK
       end
 

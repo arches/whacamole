@@ -12,9 +12,20 @@ describe Whacamole::Config do
       c.dynos.should == %w{web}
     end
 
-    it "has a default restart_threshold" do
+    it "has a default total restart threshold" do
       c = Whacamole::Config.new("production")
-      c.restart_threshold.should == 1000
+      c.restart_threshold[:total].should == 1000
+    end
+
+    it "can be set with a legacy restart treshold value" do
+      c = Whacamole::Config.new("production")
+      c.restart_threshold = 500
+      c.restart_threshold.should == {total: 500}
+    end
+
+    it "has no swap restart threshold" do
+      c = Whacamole::Config.new("production")
+      c.restart_threshold[:swap].should == nil
     end
   end
 end
