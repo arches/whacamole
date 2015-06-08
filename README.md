@@ -92,6 +92,14 @@ Whacamole.configure("HEROKU APP NAME") do |config|
 end
 ```
 
+## Contraindications
+
+:warning: Whacamole should not be used when [preboot](https://devcenter.heroku.com/articles/preboot) is activated.
+
+There are 2 main issues when using Whacamole with preboot:
+* when restarting a whole app (which happens automatically at least once a day), 2 instances of the whacamole dyno are running at the same time and would thus cause a restart to be executed twice (on an app that is already restarting!)
+* when restarting a whole app or a single dyno (e.g. manually with `heroku ps:restart web.X`, whacked by Whacamole or restarted by an autoscaler), 2 instances of the dyno are running at the same time so Whacamole can receive logs of metrics from the old dyno (actually still running) and restart the new dyno (possibly still booting and that would actually not need to be restarted)
+
 ## Self Promotion
 
 If you like Whacamole, help spread the word! Tell your friends, or at the very least star the repo on github.
