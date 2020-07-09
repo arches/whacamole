@@ -4,6 +4,8 @@ module Whacamole
 
   class Stream
 
+    STREAM_DEATH = "\x00".freeze
+
     class StreamFailure < StandardError; end
 
     def initialize(url, restart_handler, config_restart_threshold, &blk)
@@ -27,7 +29,7 @@ module Whacamole
     end
 
     def dispatch_handlers(chunk)
-      raise StreamFailure if chunk == "\x00"
+      raise StreamFailure if chunk == STREAM_DEATH
 
       memory_size_from_chunk(chunk).each do |dyno, size|
         event = Events::DynoSize.new({ process: dyno, size: size, units: "MB" })
