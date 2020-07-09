@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    whacamole (1.1.0)
+    whacamole (1.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -24,3 +24,6 @@ DEPENDENCIES
   rake (~> 10.1)
   rspec (~> 2.11)
   whacamole!
+
+BUNDLED WITH
+   2.1.4

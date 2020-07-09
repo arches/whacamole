@@ -4,17 +4,18 @@ require 'whacamole/heroku_wrapper'
 require 'whacamole/stream'
 
 module Whacamole
+  extend self
 
-  @@config = {}
+  @config = {}
 
-  def self.configure(app_name)
-    @@config[app_name.to_s] ||= Config.new(app_name)
-    yield @@config[app_name.to_s]
+  def configure(app_name)
+    @config[app_name.to_s] ||= Config.new(app_name)
+    yield @config[app_name.to_s]
   end
 
-  def self.monitor
+  def monitor
     threads = []
-    @@config.each do |app_name, config|
+    @config.each do |app_name, config|
       threads << Thread.new do
         heroku = HerokuWrapper.new(app_name, config.api_token, config.dynos, config.restart_window)
 
