@@ -102,6 +102,12 @@ describe Whacamole::Stream do
         restart.process.should == "web.2"
       end
     end
+
+    context "when Heroku begins sending null characters (i.e., the stream dies)" do
+      it "raises a StreamFailure" do
+        expect { stream.dispatch_handlers "\x00" }.to raise_error Whacamole::Stream::StreamFailure
+      end
+    end
   end
 end
 
