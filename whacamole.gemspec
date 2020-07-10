@@ -20,6 +20,6 @@ Gem::Specification.new do |gem|
 
   gem.executables         = ['whacamole']
 
-  gem.add_development_dependency 'rspec', '~> 2.11'
-  gem.add_development_dependency 'rake', '~> 10.1'
+  gem.add_development_dependency 'rspec', '~> 3.9'
+  gem.add_development_dependency 'rake', '~> 13.0'
 end

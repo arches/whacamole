@@ -4,6 +4,10 @@ module Whacamole
 
   class Stream
 
+    STREAM_DEATH = "\x00".freeze
+
+    class StreamFailure < StandardError; end
+
     def initialize(url, restart_handler, config_restart_threshold, &blk)
       @url = url
       @restart_handler = restart_handler
@@ -14,7 +18,7 @@ module Whacamole
 
     def watch
       uri = URI(url)
-      Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+      Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         request = Net::HTTP::Get.new(uri.request_uri)
         http.request(request) do |response|
           response.read_body do |chunk|
@@ -25,8 +29,10 @@ module Whacamole
     end
 
     def dispatch_handlers(chunk)
+      raise StreamFailure if chunk == STREAM_DEATH
+
       memory_size_from_chunk(chunk).each do |dyno, size|
-        event = Events::DynoSize.new({:process => dyno, :size => size, :units => "MB"})
+        event = Events::DynoSize.new({ process: dyno, size: size, units: "MB" })
         event_handler.call(event)
 
         restart(event.process) if restart_necessary?(event)
@@ -40,7 +46,7 @@ module Whacamole
       restarted = restart_handler.restart(process)
 
       if restarted
-        event_handler.call( Events::DynoRestart.new({:process => process}) )
+        event_handler.call( Events::DynoRestart.new({ process: process }) )
       end
     end
 
